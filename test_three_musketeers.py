@@ -36,7 +36,7 @@ def test_get_board():
 def test_string_to_location():
     with pytest.raises(ValueError):
         string_to_location('X3')
-    assert string_to_location('A0') == (0,0)
+    assert string_to_location('A1') == (0,0)
     #eventually add at least one more exception test and two more
     #test with correct inputs
 
@@ -66,13 +66,13 @@ def test_adjacent_location():
 def test_is_legal_move_by_musketeer():
     set_board(board1)
     with pytest.raises(ValueError):
-        is_legal_move_by_musketeer(R, left)
+        is_legal_move_by_musketeer((1, 2), left)
     assert is_legal_move_by_musketeer((1,3),left) == True
     
 def test_is_legal_move_by_enemy():
     set_board(board1)
     with pytest.raises(ValueError):
-        is_legal_move_by_enemy(M, right)
+        is_legal_move_by_enemy((1, 3), right)
     assert is_legal_move_by_enemy((1,2),left) == True
 
 def test_is_legal_move():
@@ -92,7 +92,7 @@ def test_has_some_legal_move_somewhere():
 
 def test_possible_moves_from():
     set_board(board1)
-    assert possible_moves_from((2,2)) == [left, right, up]
+    assert possible_moves_from((2,2)) == [up, left, right]
 
 def test_is_legal_location():
     set_board(board1)
