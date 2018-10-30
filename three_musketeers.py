@@ -23,7 +23,7 @@ def create_board():
     _ = "-"
     board = [ [r, r, r, r, m],
               [r, r, r, r, r],
-              [_, r, m, r, r],
+              [r, r, m, r, r],
               [r, r, r, r, r],
               [m, r, r, r, r]]
 
@@ -71,7 +71,10 @@ def location_to_string(location):
 def at(location):
     """Returns the contents of the board at the given location.
     You can assume that input will always be in correct range."""
-    return board[location[0]][location[1]]
+    try:
+        return board[location[0]][location[1]]
+    except IndexError:
+        print("Item out of range")
 
 def all_locations():
     """Returns a list of all 25 locations on the board."""
@@ -155,6 +158,13 @@ def has_some_legal_move_somewhere(who):
                 print("{} at {} is checking a position out of range".format(v, k))
     return False
 
+def is_legal_location(location):
+    """Tests if the location is legal on a 5x5 board.
+    You can assume that input will be a pair of integer numbers."""
+    if 0 <= location[0] <= 4 and 0 <= location[1] <= 4:
+        return True
+    return False
+
 def possible_moves_from(location):
     """Returns a list of directions ('left', etc.) in which it is legal
        for the player at location to move. If there is no player at
@@ -168,19 +178,13 @@ def possible_moves_from(location):
     else:
        for i in range(4):
            try:
-               if at(adjacent_location(location, directions[i])) == dic[at(location)]:
-                    lis.append(directions[i])
+               # TEMPORARY BUG FIX FOR ROW/COL > -1. FIND A BETTER SOLUTION! MUST BE A BUG IN ANOTHER FUNCTION
+               if at(adjacent_location(location, directions[i])) == dic[at(location)] and adjacent_location(location, directions[i])[0] > -1 and adjacent_location(location, directions[i])[1] > -1:
+                   lis.append(directions[i])
            except IndexError:
                 print("{} is checking a position out of range".format(at(location)))
     return lis
 
-def is_legal_location(location):
-    """Tests if the location is legal on a 5x5 board.
-    You can assume that input will be a pair of integer numbers."""
-    if 1 <= location[0] <= 4 and 1 <= location[1] <= 4:
-        return True
-    return False
-    
 def is_within_board(location, direction):
     """Tests if the move stays within the boundaries of the board.
     You can assume that input will always be in correct range."""
@@ -193,13 +197,27 @@ def all_possible_moves_for(player):
     """Returns every possible move for the player ('M' or 'R') as a list
        (location, direction) tuples.
        You can assume that input will always be in correct range."""
-    return [(0,0)]
+    all_possible_moves = []
+    for loc in all_locations():
+        if at(loc) == player:
+            all_possible_moves.append((loc, possible_moves_from(loc)))
+    return all_possible_moves
 
 def make_move(location, direction):
     """Moves the piece in location in the indicated direction.
     Doesn't check if the move is legal. You can assume that input will always
     be in correct range."""
-    return (0,0)
+    adj_location = adjacent_location(location, direction)
+    board[adj_location[0]][adj_location[1]] = board[location[0]][location[1]]
+    board[location[0]][location[1]] = "-"
+    # for item in board:
+    #     print(item)
+
+for item in get_board():
+    print(item)
+print(make_move((2,2), up))
+for item in get_board():
+    print(item)
 
 def choose_computer_move(who):
     """The computer chooses a move for a Musketeer (who = 'M') or an
