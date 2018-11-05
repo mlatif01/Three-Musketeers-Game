@@ -28,6 +28,7 @@ def create_board():
               [r, r, r, r, r],
               [m, r, r, r, r]]
 
+    # test board
     # board = [[r, r, m, r, _],
     #          [r, r, _, r, r],
     #          [r, _, m, _, r],
@@ -80,8 +81,9 @@ def at(location):
     You can assume that input will always be in correct range."""
     try:
         return board[location[0]][location[1]]
+    # Bug fix
     except IndexError:
-        print("Item out of range")
+        pass
 
 def all_locations():
     """Returns a list of all 25 locations on the board."""
@@ -159,7 +161,6 @@ def has_some_legal_move_somewhere(who):
         if v == who:
             try:
                 if can_move_piece_at(k):
-                    print(k, v)
                     return True
             except IndexError:
                 print("{} at {} is checking a position out of range".format(v, k))
@@ -225,8 +226,8 @@ def make_move(location, direction):
 # for item in get_board():
 #     print(item)
 # print(make_move((2,2), up))
-for item in get_board():
-    print(item)
+# for item in get_board():
+#     print(item)
 
 def choose_computer_move(who):
     """The computer chooses a move for a Musketeer (who = 'M') or an
@@ -245,16 +246,17 @@ def choose_computer_move(who):
 # print(choose_computer_move("M"))
 # print(choose_computer_move("R"))
 
-# FIX THIS SO THAT IT WORKS PROPERLY
 def is_enemy_win():
     """Returns True if all 3 Musketeers are in the same row or column."""
-    is_enemy_win = False
+    loc_of_m = []
     for piece in all_locations():
         if at(piece) == "M":
-            is_enemy_win = True
-    return is_enemy_win
+            loc_of_m.append(piece)
+    check_row = [x[0] for x in loc_of_m]
+    check_col = [x[1] for x in loc_of_m]
+    return check_row.count(check_row[0]) == len(check_row) or check_col.count(check_col[0]) == len(check_col)
 
-print(is_enemy_win())
+# print(is_enemy_win())
 
 #---------- Communicating with the user ----------
 #----you do not need to modify code below unless you find a bug

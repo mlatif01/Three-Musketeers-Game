@@ -136,6 +136,6 @@ def test_choose_computer_move():
 
 def test_is_enemy_win():
     set_board(board1)
-    assert is_enemy_win() == True
+    assert is_enemy_win() == False
 
 
