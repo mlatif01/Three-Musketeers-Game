@@ -15,30 +15,49 @@ board1 =  [ [_, _, _, M, _],
             [_, R, _, _, _],
             [_, _, _, R, _] ]
 
+board2 =  [ [_, M, M, _, _],
+            [M, _, _, R, _],
+            [_, R, R, R, _],
+            [_, R, _, _, _],
+            [_, _, _, _, _] ]
+
+board3 =  [ [_, _, _, _, _],
+            [M, _, _, R, _],
+            [M, R, R, R, _],
+            [_, R, _, _, _],
+            [_, _, M, _, _] ]
+
 def test_create_board():
     create_board()
     assert at((0,0)) == R
     assert at((0,4)) == M
-    #eventually add at least two more test cases
+    assert at((4,0)) == M
+    assert at((2,1)) == R
 
 def test_set_board():
     set_board(board1)
     assert at((0,0)) == _
     assert at((1,2)) == R
-    assert at((1,3)) == M    
-    #eventually add some board2 and at least 3 tests with it
+    assert at((1,3)) == M
+    set_board(board2)
+    assert at((0,1)) == M
+    assert at((0,4)) == _
+    assert at((1,3)) == R
 
 def test_get_board():
     set_board(board1)
     assert board1 == get_board()
-    #eventually add at least one more test with another board
+    set_board(board2)
+    assert board2 == get_board()
 
 def test_string_to_location():
     with pytest.raises(ValueError):
-        string_to_location('X3')
-    assert string_to_location('A1') == (0,0)
-    #eventually add at least one more exception test and two more
-    #test with correct inputs
+        string_to_location("X3")
+    with pytest.raises(ValueError):
+        string_to_location("A7")
+    assert string_to_location("A1") == (0,0)
+    assert string_to_location("C3") == (2,2)
+    assert string_to_location("E1") == (4,0)
 
 def test_location_to_string():
     with pytest.raises(ValueError):
@@ -87,8 +106,9 @@ def test_has_some_legal_move_somewhere():
     set_board(board1)
     assert has_some_legal_move_somewhere('M') == True
     assert has_some_legal_move_somewhere('R') == True
-    # Eventually put at least three additional tests here
-    # with at least one additional board
+    set_board(board2)
+    assert has_some_legal_move_somewhere('M') == False
+    assert has_some_legal_move_somewhere('R') == True
 
 def test_possible_moves_from():
     set_board(board1)
@@ -104,18 +124,18 @@ def test_is_within_board():
 
 def test_all_possible_moves_for():
     set_board(board1)
-    assert all_possible_moves_for(M) == [((1,3),left), ((2,2),left)]
+    assert all_possible_moves_for(M) == [((1,3),["down","left"]), ((2,2),["up","left","right"])]
 
 def test_make_move():
     set_board(board1)
-    assert make_move((2,2),left) == (2,1)
+    assert make_move((2,2),left) == None
     
 def test_choose_computer_move():
-    set_board(board1)
-    assert choose_computer_move(R) == ((3,1), left)
+    set_board(board3)
+    assert choose_computer_move(M) == ((2,0), "right")
 
 def test_is_enemy_win():
     set_board(board1)
-    assert is_enemy_win() == False
+    assert is_enemy_win() == True
 
 

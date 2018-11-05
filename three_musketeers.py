@@ -11,6 +11,7 @@
 #
 # For brevity, Cardinal Richleau's men are referred to as "enemy".
 # 'pass' is a no-nothing Python statement. Replace it with actual code.
+import random
 
 def create_board():
     global board
@@ -26,6 +27,12 @@ def create_board():
               [r, r, m, r, r],
               [r, r, r, r, r],
               [m, r, r, r, r]]
+
+    # board = [[r, r, m, r, _],
+    #          [r, r, _, r, r],
+    #          [r, _, m, _, r],
+    #          [r, r, m, r, r],
+    #          [_, r, r, r, r]]
 
 def set_board(new_board):
     """Replaces the global board with new_board."""
@@ -199,9 +206,13 @@ def all_possible_moves_for(player):
        You can assume that input will always be in correct range."""
     all_possible_moves = []
     for loc in all_locations():
-        if at(loc) == player:
+        if at(loc) == player and possible_moves_from(loc) != []:
             all_possible_moves.append((loc, possible_moves_from(loc)))
-    return all_possible_moves
+    if all_possible_moves != []:
+        return all_possible_moves
+
+# print(all_possible_moves_for("R"))
+# print(all_possible_moves_for("M"))
 
 def make_move(location, direction):
     """Moves the piece in location in the indicated direction.
@@ -210,12 +221,10 @@ def make_move(location, direction):
     adj_location = adjacent_location(location, direction)
     board[adj_location[0]][adj_location[1]] = board[location[0]][location[1]]
     board[location[0]][location[1]] = "-"
-    # for item in board:
-    #     print(item)
 
-for item in get_board():
-    print(item)
-print(make_move((2,2), up))
+# for item in get_board():
+#     print(item)
+# print(make_move((2,2), up))
 for item in get_board():
     print(item)
 
@@ -224,11 +233,28 @@ def choose_computer_move(who):
        enemy (who = 'R') and returns it as the tuple (location, direction),
        where a location is a (row, column) tuple as usual.
        You can assume that input will always be in correct range."""
-    return ((0,0), right)
+    if who == "R" and all_possible_moves_for("R") != None:
+        choices = all_possible_moves_for("R")
+        choice = random.choice(choices)
+        return (choice[0], random.choice(choice[1]))
+    elif who == "M":
+        choices = all_possible_moves_for("M")
+        choice = random.choice(choices)
+        return (choice[0], random.choice(choice[1]))
 
+# print(choose_computer_move("M"))
+# print(choose_computer_move("R"))
+
+# FIX THIS SO THAT IT WORKS PROPERLY
 def is_enemy_win():
     """Returns True if all 3 Musketeers are in the same row or column."""
-    return True
+    is_enemy_win = False
+    for piece in all_locations():
+        if at(piece) == "M":
+            is_enemy_win = True
+    return is_enemy_win
+
+print(is_enemy_win())
 
 #---------- Communicating with the user ----------
 #----you do not need to modify code below unless you find a bug
