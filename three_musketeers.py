@@ -19,7 +19,7 @@ def create_board():
        available (That is, it doesn't have to be passed around as a
        parameter.) 'M' represents a Musketeer, 'R' represents one of
        Cardinal Richleau's men, and '-' denotes an empty space."""
-    m = 'M'
+    m = 'M' 
     r = 'R'
     _ = "-"
     board = [ [r, r, r, r, m],
