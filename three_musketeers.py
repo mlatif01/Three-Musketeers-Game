@@ -19,7 +19,7 @@ def create_board():
        available (That is, it doesn't have to be passed around as a
        parameter.) 'M' represents a Musketeer, 'R' represents one of
        Cardinal Richleau's men, and '-' denotes an empty space."""
-    m = 'M' 
+    m = 'M'
     r = 'R'
     _ = "-"
     board = [ [r, r, r, r, m],
@@ -75,6 +75,8 @@ def location_to_string(location):
         return "{}{}".format(col_row[location[0]], location[1]+1)
     else:
         raise ValueError("Input is outside of correct range")
+
+
 
 def at(location):
     """Returns the contents of the board at the given location.
@@ -178,20 +180,30 @@ def possible_moves_from(location):
        for the player at location to move. If there is no player at
        location, returns the empty list, [].
        You can assume that input will always be in correct range."""
-    dic = {"R": "-", "M": "R"}
-    directions = [up, down, left, right]
-    lis = []
-    if not can_move_piece_at(location):
-        return []
-    else:
-       for i in range(4):
-           try:
-               # TEMPORARY BUG FIX FOR ROW/COL > -1. FIND A BETTER SOLUTION! MUST BE A BUG IN ANOTHER FUNCTION
-               if at(adjacent_location(location, directions[i])) == dic[at(location)] and adjacent_location(location, directions[i])[0] > -1 and adjacent_location(location, directions[i])[1] > -1:
-                   lis.append(directions[i])
-           except IndexError:
-                print("{} is checking a position out of range".format(at(location)))
-    return lis
+    directions = ["up", "down", "left", "right"]
+    moves = []
+    for dir in directions:
+        if is_legal_move(location, dir) and is_legal_location(adjacent_location(location, dir)):
+            moves.append(dir)
+    return moves
+
+    #Poor previous solution
+    # dic = {"R": "-", "M": "R"}
+    # directions = [up, down, left, right]
+    # lis = []
+    # if not can_move_piece_at(location):
+    #     return []
+    # else:
+    #    for i in range(4):
+    #        try:
+    #            # TEMPORARY BUG FIX FOR ROW/COL > -1. FIND A BETTER SOLUTION! MUST BE A BUG IN ANOTHER FUNCTION
+    #            if at(adjacent_location(location, directions[i])) == dic[at(location)] and adjacent_location(location, directions[i])[0] > -1 and adjacent_location(location, directions[i])[1] > -1:
+    #                lis.append(directions[i])
+    #        except IndexError:
+    #             print("{} is checking a position out of range".format(at(location)))
+    # return lis
+
+# print(possible_moves_from((0,4)))
 
 def is_within_board(location, direction):
     """Tests if the move stays within the boundaries of the board.
@@ -220,9 +232,11 @@ def make_move(location, direction):
     Doesn't check if the move is legal. You can assume that input will always
     be in correct range."""
     adj_location = adjacent_location(location, direction)
+    # print(adj_location)
     board[adj_location[0]][adj_location[1]] = board[location[0]][location[1]]
     board[location[0]][location[1]] = "-"
 
+#Testing
 # for item in get_board():
 #     print(item)
 # print(make_move((2,2), up))
@@ -234,14 +248,22 @@ def choose_computer_move(who):
        enemy (who = 'R') and returns it as the tuple (location, direction),
        where a location is a (row, column) tuple as usual.
        You can assume that input will always be in correct range."""
-    if who == "R" and all_possible_moves_for("R") != None:
-        choices = all_possible_moves_for("R")
-        choice = random.choice(choices)
-        return (choice[0], random.choice(choice[1]))
-    elif who == "M":
+
+    if all_possible_moves_for(who) != None:
         choices = all_possible_moves_for("M")
         choice = random.choice(choices)
         return (choice[0], random.choice(choice[1]))
+
+    # # Longer version
+    # if who == "R" and all_possible_moves_for("R") != None:
+    #     choices = all_possible_moves_for("R")
+    #     choice = random.choice(choices)
+    #     return (choice[0], random.choice(choice[1]))
+    # elif who == "M":
+    #     choices = all_possible_moves_for("M")
+    #     choice = random.choice(choices)
+    #     return (choice[0], random.choice(choice[1]))
+
 
 # print(choose_computer_move("M"))
 # print(choose_computer_move("R"))
@@ -256,8 +278,6 @@ def is_enemy_win():
     check_col = [x[1] for x in loc_of_m]
     return check_row.count(check_row[0]) == len(check_row) or check_col.count(check_col[0]) == len(check_col)
 
-# print(is_enemy_win())
-
 #---------- Communicating with the user ----------
 #----you do not need to modify code below unless you find a bug
 #----a bug in it before you move to stage 3
@@ -267,7 +287,7 @@ def print_board():
     print("  ---------------")
     ch = "A"
     for i in range(0, 5):
-        print(ch, "|", end = " ")
+        print(ch, "|", end=" ")
         for j in range(0, 5):
             print(board[i][j] + " ", end = " ")
         print()
@@ -282,7 +302,8 @@ letter (A, B, C, D, or E) followed by an integer (1, 2, 3, 4, or 5).
 Directions are indicated as left, right, up, or down (or simply L, R,
 U, or D). For example, to move the Musketeer from the top right-hand
 corner to the row below, enter 'A5 left' (without quotes).
-For convenience in typing, you may use lowercase letters.""")
+For convenience in typing, you may use lowercase letters.
+""")
     print()
 
 def choose_users_side():
@@ -353,10 +374,21 @@ def describe_move(who, location, direction):
           location_to_string(location), 'to',\
           location_to_string(new_location) + ".\n")
 
+def prompt_load_or_new():
+    inp = input("Type 'L' to load a previous game OR 'N' to start a new game: ").lower()
+    return inp
+
 def start():
     """Plays the Three Musketeers Game."""
-    users_side = choose_users_side()
-    board = create_board()
+    load_or_new = prompt_load_or_new()
+    if load_or_new == "l":
+        print("Loading new board...")
+        users_side = choose_users_side()
+        # Add function to load previous board from another file
+    elif load_or_new == "n":
+        print("Starting new game!")
+        users_side = choose_users_side()
+        board = create_board()
     print_instructions()
     print_board()
     while True:
@@ -375,3 +407,5 @@ def start():
         else:
             print("The Musketeers win!")
             break
+
+# start()

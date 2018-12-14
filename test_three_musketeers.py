@@ -22,7 +22,7 @@ board2 =  [ [_, M, M, _, _],
             [_, _, _, _, _] ]
 
 board3 =  [ [_, _, _, _, _],
-            [M, _, _, R, _],
+            [_, _, _, R, M],
             [M, R, R, R, _],
             [_, R, _, _, _],
             [_, _, M, _, _] ]
@@ -132,7 +132,7 @@ def test_make_move():
     
 def test_choose_computer_move():
     set_board(board3)
-    assert choose_computer_move(M) == ((2,0), "right")
+    assert choose_computer_move(M) == ((2,0), "right") or ((1,4), "left")
 
 def test_is_enemy_win():
     set_board(board1)
