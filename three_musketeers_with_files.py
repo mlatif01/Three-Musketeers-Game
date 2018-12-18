@@ -14,6 +14,7 @@
 import random
 import json
 
+
 def create_board():
     global board
     """Creates the initial Three Musketeers board and makes it globally
@@ -23,11 +24,11 @@ def create_board():
     M = 'M'
     R = 'R'
     _ = "-"
-    board = [ [R, R, R, R, M],
-              [R, R, R, R, R],
-              [R, R, M, R, R],
-              [R, R, R, R, R],
-              [M, R, R, R, R]]
+    board = [[R, R, R, R, M],
+             [R, R, R, R, R],
+             [R, R, M, R, R],
+             [R, R, R, R, R],
+             [M, R, R, R, R]]
 
 left = 'left'
 right = 'right'
@@ -53,9 +54,9 @@ def string_to_location(s):
        is outside of the correct range (between 'A' and 'E' for s[0] and
        between '1' and '5' for s[1]
        """
-    row_col = {"A": 0, "B": 1, "C": 2, "D":3, "E": 4}
+    row_col = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4}
     if s[0] in row_col.keys() and 1 <= int(s[1]) <= 5 and s != None:
-        return (row_col[s[0]], int(s[1])-1)
+        return (row_col[s[0]], int(s[1]) - 1)
     else:
         raise ValueError("Input is outside of the correct range")
 
@@ -67,7 +68,7 @@ def location_to_string(location):
     """
     col_row = {0: "A", 1: "B", 2: "C", 3: "D", 4: "E"}
     if location[0] in col_row.keys() and 0 <= location[1] <= 4:
-        return "{}{}".format(col_row[location[0]], location[1]+1)
+        return "{}{}".format(col_row[location[0]], location[1] + 1)
     else:
         raise ValueError("Input is outside of correct range")
 
@@ -97,7 +98,7 @@ def adjacent_location(location, direction):
        You can assume that input will always be in correct range."""
     (row, col) = location
     dic = {up: (-1, 0), down: (+1, 0), left: (0, -1), right: (0, +1)}
-    return (row+dic[direction][0], col+dic[direction][1])
+    return (row + dic[direction][0], col + dic[direction][1])
 
 
 def is_legal_move_by_musketeer(location, direction):
@@ -158,7 +159,7 @@ def has_some_legal_move_somewhere(who):
     dic = {}
     for i in range(5):
         for j in range(5):
-            if at((i,j)) != "-":
+            if at((i, j)) != "-":
                 dic[(i, j)] = get_board()[i][j]
     for k, v in dic.items():
         if v == who:
@@ -244,10 +245,9 @@ def is_enemy_win():
     check_col = [x[1] for x in loc_of_m]
     return check_row.count(check_row[0]) == len(check_row) or check_col.count(check_col[0]) == len(check_col)
 
-
-#---------- Communicating with the user ----------
-#----you do not need to modify code below unless you find a bug
-#----a bug in it before you move to stage 3
+# ---------- Communicating with the user ----------
+# ----you do not need to modify code below unless you find a bug
+# ----a bug in it before you move to stage 3
 
 def print_board():
     print("    1  2  3  4  5")
@@ -256,7 +256,7 @@ def print_board():
     for i in range(0, 5):
         print(ch, "|", end=" ")
         for j in range(0, 5):
-            print(board[i][j] + " ", end = " ")
+            print(board[i][j] + " ", end=" ")
         print()
         ch = chr(ord(ch) + 1)
     print()
@@ -288,13 +288,17 @@ def choose_users_side():
 
 def get_users_move():
     """Gets a legal move from the user, and returns it as a
-       (location, direction) tuple."""    
-    directions = {'L':'left', 'R':'right', 'U':'up', 'D':'down'}
+       (location, direction) tuple."""
+    directions = {'L': 'left', 'R': 'right', 'U': 'up', 'D': 'down'}
     move = input("Your move? ").upper().replace(' ', '')
-    if (len(move) >= 3
-            and move[0] in 'ABCDE'
-            and move[1] in '12345'
-            and move[2] in 'LRUD'):
+    # Save game state
+    if move == "S":
+        save_game()
+        get_users_move()
+    elif (len(move) >= 3
+          and move[0] in 'ABCDE'
+          and move[1] in '12345'
+          and move[2] in 'LRUD'):
         location = string_to_location(move[0:2])
         direction = directions[move[2]]
         if is_legal_move(location, direction):
@@ -315,8 +319,8 @@ def move_musketeer(users_side):
         else:
             print("You can't move there!")
             return move_musketeer(users_side)
-    else: # Computer plays Musketeer
-        (location, direction) = choose_computer_move('M')         
+    else:  # Computer plays Musketeer
+        (location, direction) = choose_computer_move('M')
         make_move(location, direction)
         describe_move("Musketeer", location, direction)
 
@@ -333,8 +337,8 @@ def move_enemy(users_side):
         else:
             print("You can't move there!")
             return move_enemy(users_side)
-    else: # Computer plays enemy
-        (location, direction) = choose_computer_move('R')         
+    else:  # Computer plays enemy
+        (location, direction) = choose_computer_move('R')
         make_move(location, direction)
         describe_move("Enemy", location, direction)
         return board
@@ -343,17 +347,50 @@ def move_enemy(users_side):
 def describe_move(who, location, direction):
     """Prints a sentence describing the given move."""
     new_location = adjacent_location(location, direction)
-    print(who, 'moves', direction, 'from',\
-          location_to_string(location), 'to',\
+    print(who, 'moves', direction, 'from', \
+          location_to_string(location), 'to', \
           location_to_string(new_location) + ".\n")
+
+
+def prompt_load_or_new():
+    inp = input("Type 'L' to load a previous game OR 'N' to start a new game: ").lower()
+    return inp
+
+
+def load_game():
+    with open('prevgame.txt', 'r') as filehandle:
+        prev_board = json.load(filehandle)
+    set_board(prev_board)
+
+
+def save_game():
+    m = 'M'
+    r = 'R'
+    _ = "-"
+    new_board = get_board()
+    with open('prevgame.txt', 'w') as filehandle:
+        json.dump(new_board, filehandle)
+
+    print("The game has been saved")
 
 
 def start_game():
     """Plays the Three Musketeers Game."""
-    users_side = choose_users_side()
-    board = create_board()
+    load_or_new = prompt_load_or_new()
+    if load_or_new == "l":
+        print("Loading previous board...")
+        users_side = choose_users_side()
+        load_game()
+    elif load_or_new == "n":
+        print("Starting new game! \n!!Type 'S' if you want to save the game state when choosing move!!")
+        users_side = choose_users_side()
+        board = create_board()
     print_instructions()
     print_board()
+    main_game(users_side)
+
+
+def main_game(users_side):
     while True:
         if has_some_legal_move_somewhere('M'):
             board = move_musketeer(users_side)
