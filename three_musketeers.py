@@ -12,6 +12,7 @@
 # For brevity, Cardinal Richleau's men are referred to as "enemy".
 # 'pass' is a no-nothing Python statement. Replace it with actual code.
 import random
+import json
 
 def create_board():
     global board
@@ -19,14 +20,14 @@ def create_board():
        available (That is, it doesn't have to be passed around as a
        parameter.) 'M' represents a Musketeer, 'R' represents one of
        Cardinal Richleau's men, and '-' denotes an empty space."""
-    m = 'M'
-    r = 'R'
+    M = 'M'
+    R = 'R'
     _ = "-"
-    board = [ [r, r, r, r, m],
-              [r, r, r, r, r],
-              [r, r, m, r, r],
-              [r, r, r, r, r],
-              [m, r, r, r, r]]
+    board = [ [R, R, R, R, M],
+              [R, R, R, R, R],
+              [R, R, M, R, R],
+              [R, R, R, R, R],
+              [M, R, R, R, R]]
 
     # test board
     # board = [[r, r, m, r, _],
@@ -250,7 +251,7 @@ def choose_computer_move(who):
        You can assume that input will always be in correct range."""
 
     if all_possible_moves_for(who) != None:
-        choices = all_possible_moves_for("M")
+        choices = all_possible_moves_for(who)
         choice = random.choice(choices)
         return (choice[0], random.choice(choice[1]))
 
@@ -378,13 +379,18 @@ def prompt_load_or_new():
     inp = input("Type 'L' to load a previous game OR 'N' to start a new game: ").lower()
     return inp
 
+def load_game():
+    with open('prevgame.txt', 'r') as filehandle:
+        prev_board = json.load(filehandle)
+    set_board(prev_board)
+
 def start():
     """Plays the Three Musketeers Game."""
     load_or_new = prompt_load_or_new()
     if load_or_new == "l":
-        print("Loading new board...")
+        print("Loading previous board...")
         users_side = choose_users_side()
-        # Add function to load previous board from another file
+        load_game()
     elif load_or_new == "n":
         print("Starting new game!")
         users_side = choose_users_side()
@@ -408,4 +414,4 @@ def start():
             print("The Musketeers win!")
             break
 
-# start()
+start()
