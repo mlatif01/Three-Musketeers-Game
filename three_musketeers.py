@@ -322,7 +322,11 @@ def get_users_move():
        (location, direction) tuple."""    
     directions = {'L':'left', 'R':'right', 'U':'up', 'D':'down'}
     move = input("Your move? ").upper().replace(' ', '')
-    if (len(move) >= 3
+    # Save game state
+    if move == "S":
+        save_game()
+        get_users_move()
+    elif (len(move) >= 3
             and move[0] in 'ABCDE'
             and move[1] in '12345'
             and move[2] in 'LRUD'):
@@ -384,7 +388,18 @@ def load_game():
         prev_board = json.load(filehandle)
     set_board(prev_board)
 
-def start():
+def save_game():
+    m = 'M'
+    r = 'R'
+    _ = "-"
+    new_board = get_board()
+
+    with open('prevgame.txt', 'w') as filehandle:
+        json.dump(new_board, filehandle)
+
+    print("The game has been saved")
+
+def start_game():
     """Plays the Three Musketeers Game."""
     load_or_new = prompt_load_or_new()
     if load_or_new == "l":
@@ -392,11 +407,14 @@ def start():
         users_side = choose_users_side()
         load_game()
     elif load_or_new == "n":
-        print("Starting new game!")
+        print("Starting new game! \n!!Type 'S' if you want to save the game state when choosing move!!")
         users_side = choose_users_side()
         board = create_board()
     print_instructions()
     print_board()
+    main_game(users_side)
+
+def main_game(users_side):
     while True:
         if has_some_legal_move_somewhere('M'):
             board = move_musketeer(users_side)
@@ -414,4 +432,4 @@ def start():
             print("The Musketeers win!")
             break
 
-start()
+start_game()
