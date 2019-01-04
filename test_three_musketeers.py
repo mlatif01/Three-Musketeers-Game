@@ -27,6 +27,18 @@ board3 =  [ [_, _, _, _, _],
             [_, R, _, _, _],
             [_, _, M, _, _] ]
 
+board4 =  [ [_, _, _, _, _],
+            [_, _, _, R, M],
+            [M, _, _, _, _],
+            [_, R, _, _, _],
+            [_, _, M, _, _] ]
+
+board5 =  [ [_, _, _, _, _],
+            [_, _, _, R, R],
+            [M, M, M, _, _],
+            [_, R, _, _, _],
+            [_, _, R, _, _] ]
+
 def test_create_board():
     create_board()
     assert at((0,0)) == R
@@ -97,10 +109,14 @@ def test_is_legal_move_by_enemy():
 def test_is_legal_move():
     set_board(board1)
     assert is_legal_move((0,3),right) == False
+    set_board(board3)
+    assert is_legal_move((2,0),right) == True
 
 def test_can_move_piece_at():
     set_board(board1)
     assert can_move_piece_at((2,2)) == True
+    set_board(board3)
+    assert can_move_piece_at((4,2)) == False
 
 def test_has_some_legal_move_somewhere():
     set_board(board1)
@@ -113,29 +129,43 @@ def test_has_some_legal_move_somewhere():
 def test_possible_moves_from():
     set_board(board1)
     assert possible_moves_from((2,2)) == [up, left, right]
+    set_board(board3)
+    assert possible_moves_from((2,0)) == [right]
 
 def test_is_legal_location():
     set_board(board1)
     assert is_legal_location((2,2)) == True
+    set_board(board2)
+    assert is_legal_location((5,5)) == False
 
 def test_is_within_board():
     set_board(board1)
     assert is_within_board((3,1),left) == True
+    set_board(board3)
+    assert is_within_board((2,0),left) == False
 
 def test_all_possible_moves_for():
     set_board(board1)
     assert all_possible_moves_for(M) == [((1,3),["down","left"]), ((2,2),["up","left","right"])]
+    set_board(board4)
+    assert all_possible_moves_for(R) == [((1,3),["up", "down", "left"]), ((3,1),["up", "down", "left", "right"])]
 
 def test_make_move():
     set_board(board1)
     assert make_move((2,2),left) == None
-    
+    set_board(board2)
+    assert make_move((2,1),up) == None
+
 def test_choose_computer_move():
     set_board(board3)
-    assert choose_computer_move(M) == ((2,0), "right") or ((1,4), "left")
+    assert choose_computer_move(M) == ((2,0),"right") or ((1,4),"left")
+    set_board(board4)
+    assert choose_computer_move(R) == ((1,3),"up") or ((1,3),"down") or ((1,3),"left") or ((3,1),"up") or ((3,1),"down")\
+           or ((3,1),"left") or ((3,1),"right")
 
 def test_is_enemy_win():
     set_board(board1)
     assert is_enemy_win() == False
-
+    set_board(board5)
+    assert is_enemy_win() == True
 

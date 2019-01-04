@@ -218,7 +218,6 @@ def make_move(location, direction):
     Doesn't check if the move is legal. You can assume that input will always
     be in correct range."""
     adj_location = adjacent_location(location, direction)
-    # print(adj_location)
     board[adj_location[0]][adj_location[1]] = board[location[0]][location[1]]
     board[location[0]][location[1]] = "-"
 
@@ -228,7 +227,6 @@ def choose_computer_move(who):
        enemy (who = 'R') and returns it as the tuple (location, direction),
        where a location is a (row, column) tuple as usual.
        You can assume that input will always be in correct range."""
-
     if all_possible_moves_for(who) != None:
         choices = all_possible_moves_for(who)
         choice = random.choice(choices)
@@ -246,8 +244,6 @@ def is_enemy_win():
     return check_row.count(check_row[0]) == len(check_row) or check_col.count(check_col[0]) == len(check_col)
 
 # ---------- Communicating with the user ----------
-# ----you do not need to modify code below unless you find a bug
-# ----a bug in it before you move to stage 3
 
 def print_board():
     print("    1  2  3  4  5")
@@ -353,29 +349,28 @@ def describe_move(who, location, direction):
 
 
 def prompt_load_or_new():
+    """ Asks user if they want to load previous game or start a new game"""
     inp = input("Type 'L' to load a previous game OR 'N' to start a new game: ").lower()
     return inp
 
 
 def load_game():
+    """Loads a previous game"""
     with open('prevgame.txt', 'r') as filehandle:
         prev_board = json.load(filehandle)
     set_board(prev_board)
 
 
 def save_game():
-    m = 'M'
-    r = 'R'
-    _ = "-"
+    """Saves the current state of the game"""
     new_board = get_board()
     with open('prevgame.txt', 'w') as filehandle:
         json.dump(new_board, filehandle)
-
     print("The game has been saved")
 
 
 def start_game():
-    """Plays the Three Musketeers Game."""
+    """Starts the Three Musketeers Game."""
     load_or_new = prompt_load_or_new()
     if load_or_new == "l":
         print("Loading previous board...")
@@ -391,6 +386,7 @@ def start_game():
 
 
 def main_game(users_side):
+    """Plays the main game"""
     while True:
         if has_some_legal_move_somewhere('M'):
             board = move_musketeer(users_side)
@@ -408,4 +404,5 @@ def main_game(users_side):
             print("The Musketeers win!")
             break
 
+#Uncomment below to start the game
 start_game()

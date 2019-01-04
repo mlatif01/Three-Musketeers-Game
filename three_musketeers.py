@@ -12,7 +12,6 @@
 # For brevity, Cardinal Richleau's men are referred to as "enemy".
 # 'pass' is a no-nothing Python statement. Replace it with actual code.
 import random
-import json
 
 def create_board():
     global board
@@ -217,7 +216,6 @@ def make_move(location, direction):
     Doesn't check if the move is legal. You can assume that input will always
     be in correct range."""
     adj_location = adjacent_location(location, direction)
-    # print(adj_location)
     board[adj_location[0]][adj_location[1]] = board[location[0]][location[1]]
     board[location[0]][location[1]] = "-"
 
@@ -246,8 +244,6 @@ def is_enemy_win():
 
 
 #---------- Communicating with the user ----------
-#----you do not need to modify code below unless you find a bug
-#----a bug in it before you move to stage 3
 
 def print_board():
     print("    1  2  3  4  5")
@@ -371,4 +367,5 @@ def start_game():
             print("The Musketeers win!")
             break
 
-start_game()
+#Uncomment below to start the game
+# start_game()
