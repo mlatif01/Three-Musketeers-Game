@@ -1,0 +1,25 @@
+Total coursework mark: _19.4_  (out of 20)
+
+Exercise sheets mark:  10  (out of 10)
+
+Project mark:  _9.4_  (out of 10)
+
+Project feedback and mark details
+
+Correctness and adherence to specification:  _30_  (out of 30%)
+
+Seems good
+
+Completeness of code, tests, and commit history:  _30_    (out of 30%)   
+
+commit history ok
+All tests work fine
+
+Coding style: _10_   (out of 10%) 
+
+good
+
+Extension:  _24_     (out of 30%) 
+
+No option to save several games and specify file names. 
+Should not switch roles for a saved games.
